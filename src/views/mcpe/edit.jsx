@@ -1,50 +1,44 @@
-//import useState
-import { useState } from "react";
-
-//import useNavigate
-import { useNavigate } from "react-router-dom";
-
-//import API
+import { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../../api";
 
-export default function PostCreate() {
-  //define state
+export default function McpeEdit() {
   const [image, setImage] = useState("");
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-
-  //state validation
+  const [item, setItem] = useState("");
+  const [deskripsi, setDeskripsi] = useState("");
   const [errors, setErrors] = useState([]);
-
-  //useNavigate
   const navigate = useNavigate();
+  const { id } = useParams();
 
-  //method handle file change
+  const fetchDetailMcpe = async () => {
+    await api.get(`/api/mcpe/${id}`).then((response) => {
+      setItem(response.data.data.item);
+      setDeskripsi(response.data.data.deskripsi);
+    });
+  };
+
+  useEffect(() => {
+    fetchDetailMcpe();
+  }, []);
+
   const handleFileChange = (e) => {
     setImage(e.target.files[0]);
   };
 
-  //method store post
-  const storePost = async (e) => {
+  const updateMcpe = async (e) => {
     e.preventDefault();
-
-    //init FormData
     const formData = new FormData();
-
-    //append data
     formData.append("image", image);
-    formData.append("title", title);
-    formData.append("content", content);
+    formData.append("item", item);
+    formData.append("deskripsi", deskripsi);
+    formData.append("_method", "PUT");
 
-    //send data with API
     await api
-      .post("/api/posts", formData)
+      .post(`/api/mcpe/${id}`, formData)
       .then(() => {
-        //redirect to posts index
-        navigate("/posts");
+        navigate("/mcpe");
       })
       .catch((error) => {
-        //set errors response to state "errors"
         setErrors(error.response.data);
       });
   };
@@ -76,7 +70,7 @@ export default function PostCreate() {
           <div className="col-md-12">
             <div className="card border-0 rounded shadow">
               <div className="card-body">
-                <form onSubmit={storePost}>
+                <form onSubmit={updateMcpe}>
                   <div className="mb-3">
                     <label className="form-label fw-bold">Image</label>
                     <input
@@ -92,31 +86,33 @@ export default function PostCreate() {
                   </div>
 
                   <div className="mb-3">
-                    <label className="form-label fw-bold">Title</label>
+                    <label className="form-label fw-bold">Item</label>
                     <input
                       type="text"
                       className="form-control"
-                      onChange={(e) => setTitle(e.target.value)}
-                      placeholder="Title Post"
+                      value={item}
+                      onChange={(e) => setItem(e.target.value)}
+                      placeholder="Item Mcpe"
                     />
-                    {errors.title && (
+                    {errors.item && (
                       <div className="alert alert-danger mt-2">
-                        {errors.title[0]}
+                        {errors.item[0]}
                       </div>
                     )}
                   </div>
 
                   <div className="mb-3">
-                    <label className="form-label fw-bold">Content</label>
+                    <label className="form-label fw-bold">Deskripsi</label>
                     <textarea
                       className="form-control"
-                      onChange={(e) => setContent(e.target.value)}
+                      value={deskripsi}
+                      onChange={(e) => setDeskripsi(e.target.value)}
                       rows="5"
-                      placeholder="Content Post"
+                      placeholder="Deskripsi Mcpe"
                     ></textarea>
-                    {errors.content && (
+                    {errors.deskripsi && (
                       <div className="alert alert-danger mt-2">
-                        {errors.content[0]}
+                        {errors.deskripsi[0]}
                       </div>
                     )}
                   </div>
@@ -125,7 +121,7 @@ export default function PostCreate() {
                     type="submit"
                     className="btn btn-md btn-primary rounded-sm shadow border-0"
                   >
-                    Save
+                    Update Mcpe
                   </button>
                 </form>
               </div>

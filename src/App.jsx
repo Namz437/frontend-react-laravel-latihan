@@ -10,7 +10,7 @@ export default function App() {
         <nav className="navbar navbar-expand-lg bg-dark" data-bs-theme="dark">
           <div className="container">
             <Link to="/" className="navbar-brand">
-              HOME
+              Homepage
             </Link>
             <button
               className="navbar-toggler"
@@ -34,7 +34,16 @@ export default function App() {
                     className="nav-link active"
                     aria-current="page"
                   >
-                    POSTS
+                    Posts
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link
+                    to="/mcpe"
+                    className="nav-link active"
+                    aria-current="page"
+                  >
+                    Minecraft
                   </Link>
                 </li>
               </ul>
